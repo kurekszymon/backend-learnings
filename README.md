@@ -1,6 +1,10 @@
 # notes 
 Every paragraph would include a date (mm/dd/yyyy) some kind of short description of progress and faced/resolved problems
 
+## 11/12/2023 
+
+decided to present changes in a form of an mmo, where c# would be used as an simple api, where heavier task would be performed on the c++ side. 
+
 ##  11/10/2023
 
 project setup c# with cpp/cli 
@@ -14,5 +18,5 @@ project setup c# with cpp/cli
 - build cpp project 
 - reference cpp code in c# files like {namespace}.{class}.{method}
 
-sidenote: clr in visual studio has build target set to .net7-windows, so it should be matched in c# code to be able tro build the solution.
-todo: find out if it can be changed, so it could be multiplatform.
+_sidenote_: clr in visual studio has build target set to .net7-windows, so it should be matched in c# code to be able to build the solution.
+_todo_: find out if it can be changed, so it could be multiplatform.

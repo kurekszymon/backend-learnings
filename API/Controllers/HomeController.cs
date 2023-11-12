@@ -6,8 +6,6 @@ namespace API.Controllers
     [Route("[controller]")]
     public class HomeController : ControllerBase
     {
-
-
         [HttpGet]
         public string Get()
         {

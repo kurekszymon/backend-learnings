@@ -5,6 +5,9 @@ Every paragraph would include a date (mm/dd/yyyy) some kind of short description
 
 decided to present changes in a form of an mmo, where c# would be used as an simple api, where heavier task would be performed on the c++ side. 
 
+- used automapper 
+- declared proper models, controllers, services and dtos. 
+
 ##  11/10/2023
 
 project setup c# with cpp/cli 

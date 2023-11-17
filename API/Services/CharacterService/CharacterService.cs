@@ -1,6 +1,8 @@
-﻿using API.DTOs.CharacterDTO;
+﻿using API.Data;
+using API.DTOs.CharacterDTO;
 using API.Models;
 using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Services.CharacterService
 {
@@ -8,29 +10,29 @@ namespace API.Services.CharacterService
     {
 
         private readonly IMapper _mapper;
+        private readonly DataContext _context;
 
-        private static List<Character> characters = new List<Character> {
-            new Character(),
-            new Character{Id = 1, Name = "sam"},
-        };
 
-        public CharacterService(IMapper mapper)
+        public CharacterService(IMapper mapper, DataContext context)
         {
             this._mapper = mapper;
+            this._context = context;
         }
 
         public async Task<ServiceResponse<List<GetCharacterResponse>>> GetAllCharacters()
         {
+            var dbCharacters = await _context.Characters.ToListAsync();
+
             var ServiceResponse = new ServiceResponse<List<GetCharacterResponse>>
             {
-                Data = _mapper.Map<List<GetCharacterResponse>>(characters)
+                Data = _mapper.Map<List<GetCharacterResponse>>(dbCharacters)
             };
             return ServiceResponse;
         }
 
-        public async Task<ServiceResponse<GetCharacterResponse>> GetCharacterById(int id)
+        public async Task<ServiceResponse<GetCharacterResponse>> GetCharacterById(Guid id)
         {
-            Character? character = characters.FirstOrDefault(c => c.Id == id);
+            Character? character = await _context.Characters.FindAsync(id);
             var ServiceResponse = new ServiceResponse<GetCharacterResponse>
             {
                 Data = _mapper.Map<GetCharacterResponse>(character)
@@ -41,24 +43,24 @@ namespace API.Services.CharacterService
 
         public async Task AddCharacter(AddCharacterRequest character)
         {
-            var characterId = characters.Max(c => c.Id) + 1;
             Character _character = _mapper.Map<Character>(character);
-            _character.Id = characterId;
 
-            await Task.Run(() => characters.Add(_character));
+            _context.Characters.Add(_character);
+
+            await _context.SaveChangesAsync();
         }
 
-        public async Task<ServiceResponse<GetCharacterResponse>> UpdateCharacter(UpdateCharacterRequest character)
+        public async Task<ServiceResponse<GetCharacterResponse>> UpdateCharacter(Guid id, UpdateCharacterRequest character)
         {
             var serviceResponse = new ServiceResponse<GetCharacterResponse>();
 
             try
             {
-                Character? _character = characters.FirstOrDefault(c => c.Id == character.Id);
+                Character? _character = await _context.Characters.FindAsync(id);
 
                 if (_character == null)
                 {
-                    throw new Exception($"Character with id {character?.Id} was not found.");
+                    throw new Exception($"Character with id {id} was not found.");
                 }
 
                 _character.Name = character.Name;
@@ -68,7 +70,39 @@ namespace API.Services.CharacterService
                 _character.HitPoints = character.HitPoints;
                 _character.Vocation = character.Vocation;
 
+
+                await _context.SaveChangesAsync();
+
                 serviceResponse.Data = _mapper.Map<GetCharacterResponse>(_character);
+
+                return serviceResponse;
+            }
+            catch (Exception ex)
+            {
+                serviceResponse.Error = true;
+                serviceResponse.Message = ex.Message;
+                return serviceResponse;
+            }
+        }
+
+        public async Task<ServiceResponse<Guid?>> DeleteCharacter(Guid id)
+        {
+            var serviceResponse = new ServiceResponse<Guid?>();
+
+            try
+            {
+                Character? _character = await _context.Characters.FindAsync(id);
+
+                if (_character == null)
+                {
+                    throw new Exception($"Character with id {id} was not found.");
+                }
+
+
+                _context.Characters.Remove(_character);
+                await _context.SaveChangesAsync();
+
+                serviceResponse.Data = id;
 
                 return serviceResponse;
             }

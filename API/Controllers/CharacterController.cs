@@ -24,7 +24,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<List<GetCharacterResponse>>> GetSingle(int id)
+        public async Task<ActionResult<List<GetCharacterResponse>>> GetSingle(Guid id)
         {
             return Ok(await _characterService.GetCharacterById(id));
         }
@@ -36,10 +36,10 @@ namespace API.Controllers
             return NoContent();
         }
 
-        [HttpPut]
-        public async Task<ActionResult<GetCharacterResponse>> UpdateCharacter(UpdateCharacterRequest character)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<GetCharacterResponse>> UpdateCharacter(Guid id, UpdateCharacterRequest character)
         {
-            var response = await _characterService.UpdateCharacter(character);
+            var response = await _characterService.UpdateCharacter(id, character);
 
             if (response.Data is null)
             {
@@ -47,6 +47,19 @@ namespace API.Controllers
             }
 
             return Ok(response);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteCharacter(Guid id)
+        {
+            var response = await _characterService.DeleteCharacter(id);
+
+            if (response.Data is null)
+            {
+                return NotFound(response);
+            }
+
+            return NoContent();
         }
 
     }

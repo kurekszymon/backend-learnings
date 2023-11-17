@@ -1,6 +1,10 @@
 # notes 
 Every paragraph would include a date (mm/dd/yyyy) some kind of short description of progress and faced/resolved problems
 
+## 11/17/2023
+
+finished crud, added Entity Framework Core to work with DB.
+
 ## 11/12/2023 
 
 decided to present changes in a form of an mmo, where c# would be used as an simple api, where heavier task would be performed on the c++ side. 

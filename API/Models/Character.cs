@@ -2,7 +2,7 @@
 {
     public class Character
     {
-        public int Id { get; set; } = 0;
+        public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; } = "Frodo";
         public int HitPoints { get; set; } = 100;
         public int Attack { get; set; } = 10;
